@@ -1,11 +1,3 @@
-# URL
+# rustwi
 
-|メソッド|パス|画面|処理内容|処理後の表示内容|ログイン要否|
-|-|-|-|-|-|-|
-|GET|/|ホーム画面|ツイート一覧を取得する|-|必須|
-|POST|/tweets/new|-|投稿フォームの内容に従ってツイートを作成する|ホーム画面|必須|
-|POST|/tweets/:id/delete|-|指定されたIDのツイートを削除する|ホーム画面|必須|
-|GET|/login|ログイン画面|-|-|-|
-|POST|/account/session|-|メールアドレスとパスワードでログイン認証する|ホーム画面 or ログイン画面|-|
-|GET|/register|アカウント作成画面|-|-|-|
-|POST|/account/new|-|フォームの内容でアカウントを作成する|ホーム画面|-|
+Design: [here](https://zenn.dev/tkzwhr/books/rust-webapp-tutorial/viewer/introduction)

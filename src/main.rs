@@ -1,5 +1,35 @@
-use axum::{response::Html, routing::get, Router};
+use askama::Template;
+use axum::{
+    response::{Html, IntoResponse},
+    routing::get,
+    Router,
+};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+#[derive(Template)]
+#[template(path = "home.html")]
+struct Home {
+    tweets: Vec<Tweet>,
+}
+
+struct Tweet {
+    name: String,
+    message: String,
+    posted_at: String,
+}
+
+impl Tweet {
+    fn new<T>(name: T, message: T, posted_at: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            name: name.into(),
+            message: message.into(),
+            posted_at: posted_at.into(),
+        }
+    }
+}
 
 #[tokio::main]
 async fn main() {
@@ -21,8 +51,13 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn handler() -> Html<&'static str> {
-    tracing::debug!("request!");
+async fn handler() -> impl IntoResponse {
+    let tweets = (1..=20)
+        .into_iter()
+        .map(|_| Tweet::new("太郎", "こんにちわ！", "2020-01-01 12:34"))
+        .collect();
 
-    Html("<h1>Hello, World!</h1>")
+    let home = Home { tweets };
+
+    Html(home.render().unwrap()).into_response()
 }

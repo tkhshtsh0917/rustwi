@@ -10,3 +10,4 @@ axum = { git = "https://github.com/tokio-rs/axum.git", rev = "c8cf147657093bff3a
 tokio = { version = "1.32", features = ["full"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+askama = "0.12"
