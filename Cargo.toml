@@ -6,8 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+askama = "0.12"
 axum = { git = "https://github.com/tokio-rs/axum.git", rev = "c8cf147657093bff3aad5cbf2dafa336235a37c6" }
+serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.32", features = ["full"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-askama = "0.12"
