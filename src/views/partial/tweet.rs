@@ -5,14 +5,11 @@ pub struct Tweet {
 }
 
 impl Tweet {
-    pub fn new<T>(name: T, message: T, posted_at: T) -> Self
-    where
-        T: Into<String>,
-    {
+    pub fn new(name: String, message: String, posted_at: String) -> Self {
         Self {
-            name: name.into(),
-            message: message.into(),
-            posted_at: posted_at.into(),
+            name,
+            message,
+            posted_at,
         }
     }
 }

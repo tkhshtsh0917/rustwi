@@ -1,6 +1,8 @@
 .vscode
+database/store
 target
 .dockerignore
 .gitignore
+docker-compose.yaml
 Dockerfile
 README.md

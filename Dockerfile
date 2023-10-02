@@ -13,7 +13,8 @@ FROM scratch
 WORKDIR /rustwi
 
 COPY --from=builder /home/builder/target/aarch64-unknown-linux-musl/release/rustwi .
+COPY ./.env .
 
 EXPOSE 8080
 
-ENTRYPOINT [ "./rustwi" ] 
+ENTRYPOINT [ "./rustwi" ]
