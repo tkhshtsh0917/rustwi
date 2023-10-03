@@ -1,5 +1,4 @@
 .vscode
-database/store
 target
 .dockerignore
 .gitignore
