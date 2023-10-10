@@ -16,6 +16,9 @@ mod repositories {
     mod tweets;
 
     pub(crate) use tweets::Tweets;
+
+    #[cfg(test)]
+    pub(crate) use tweets::MockTweets;
 }
 
 mod repositories_impl {
