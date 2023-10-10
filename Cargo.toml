@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 askama = "0.12"
-axum = { git = "https://github.com/tokio-rs/axum.git", rev = "c8cf147657093bff3aad5cbf2dafa336235a37c6" }
+axum = { git = "https://github.com/tokio-rs/axum.git", rev = "c8cf147657093bff3aad5cbf2dafa336235a37c6", features = ["macros"] }
 bb8 = "0.8"
 bb8-postgres = "0.8"
 chrono = { version = "0.4", features = ["serde"] }

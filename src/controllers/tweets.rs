@@ -1,10 +1,8 @@
-use std::sync::Arc;
-
 use axum::{extract::Form, response::IntoResponse, routing, Router};
 use serde::Deserialize;
 
 use crate::{
-    database::ConnectionPool,
+    database::Repositories,
     response,
     views::{Home, Tweet},
 };
@@ -14,10 +12,10 @@ struct TweetForm {
     message: String,
 }
 
-pub fn tweets(pool: Arc<ConnectionPool>) -> Router {
+pub fn tweets(repos: Repositories) -> Router {
     Router::new()
         .route("/new", routing::post(post_tweet_handler))
-        .with_state(pool)
+        .with_state(repos)
 }
 
 #[tracing::instrument(skip_all)]

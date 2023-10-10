@@ -3,22 +3,46 @@ mod controllers {
     mod tweets;
 
     pub use root::app;
-    pub use tweets::tweets;
+    pub(crate) use tweets::tweets;
 }
 
-mod database;
-mod response;
+mod entities {
+    mod tweet;
+
+    pub(crate) use tweet::Tweet;
+}
+
+mod repositories {
+    mod tweets;
+
+    pub(crate) use tweets::Tweets;
+}
+
+mod repositories_impl {
+    mod tweets;
+
+    pub(crate) use tweets::TweetsImpl;
+}
+
+mod services {
+    mod tweets;
+
+    pub(crate) use tweets::list_tweets;
+}
 
 mod views {
     mod home;
     mod partial {
         mod tweet;
 
-        pub use tweet::Tweet;
+        pub(crate) use tweet::Tweet;
     }
 
-    pub use home::Home;
-    pub use partial::Tweet;
+    pub(crate) use home::Home;
+    pub(crate) use partial::Tweet;
 }
+
+mod database;
+mod response;
 
 pub use controllers::app;

@@ -1,46 +1,21 @@
-use std::sync::Arc;
-
 use axum::{extract::State, response::IntoResponse, routing, Router};
-use chrono::{DateTime, Utc};
 
 use crate::{
-    controllers::tweets,
-    database::{self, ConnectionPool},
-    response,
-    views::{Home, Tweet},
+    controllers::tweets, database, repositories_impl::TweetsImpl, response, services::list_tweets,
 };
 
 pub async fn app() -> Router {
-    let connection_pool = Arc::new(database::use_connection_pool().await);
+    let repos = database::resolve_repositories().await;
 
     Router::new()
         .route("/", routing::get(home_view_handler))
-        .with_state(connection_pool.clone())
-        .nest("/tweets", tweets(connection_pool))
+        .with_state(repos.clone())
+        .nest("/tweets", tweets(repos.clone()))
 }
 
-#[tracing::instrument]
-async fn home_view_handler(State(pool): State<Arc<ConnectionPool>>) -> impl IntoResponse {
-    let conn = pool.get().await.unwrap();
-    let rows = conn
-        .query("SELECT * FROM tweets ORDER BY posted_at DESC", &[])
-        .await
-        .unwrap();
-
-    let tweets = rows
-        .into_iter()
-        .map(|row| {
-            Tweet::new(
-                "太郎".to_string(),
-                row.get("message"),
-                row.get::<&str, DateTime<Utc>>("posted_at")
-                    .format("%Y/%m/%d %H:%M")
-                    .to_string(),
-            )
-        })
-        .collect();
-
-    let home = Home::new(tweets);
+#[tracing::instrument(skip_all)]
+async fn home_view_handler(State(repo): State<TweetsImpl>) -> impl IntoResponse {
+    let home = list_tweets(&repo).await;
 
     response::from_template(home)
 }
