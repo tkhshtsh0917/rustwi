@@ -1,9 +1,10 @@
+use crate::entities::Tweet;
 use crate::repositories::Tweets;
 use crate::views::Home;
 
-pub async fn list_tweets<T>(repo: &T) -> Home
+pub async fn list_tweets<R>(repo: &R) -> Home
 where
-    T: Tweets,
+    R: Tweets,
 {
     let tweets = repo.list().await;
 
@@ -12,12 +13,23 @@ where
     }
 }
 
+pub async fn create_tweet<R, T>(repo: &R, message: T)
+where
+    R: Tweets,
+    T: Into<String>,
+{
+    let new_tweet = Tweet::create(message);
+    repo.store(&new_tweet).await;
+}
+
 #[cfg(test)]
 mod tests {
     use chrono::{TimeZone, Utc};
 
     use crate::entities::Tweet;
     use crate::repositories::MockTweets;
+
+    use super::{create_tweet, list_tweets};
 
     fn tweet(id: i32) -> Tweet {
         Tweet::new(
@@ -32,7 +44,7 @@ mod tests {
         let mut tweets = MockTweets::new();
         tweets.expect_list().returning(|| vec![tweet(2), tweet(1)]);
 
-        let actual = super::list_tweets(&tweets).await;
+        let actual = list_tweets(&tweets).await;
         assert_eq!(actual.tweets.len(), 2);
 
         let actual_0 = actual.tweets.get(0).unwrap();
@@ -49,7 +61,20 @@ mod tests {
         let mut tweets = MockTweets::new();
         tweets.expect_list().returning(|| vec![]);
 
-        let actual = super::list_tweets(&tweets).await;
+        let actual = list_tweets(&tweets).await;
         assert!(actual.tweets.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_create_tweet() {
+        let mut tweets = MockTweets::new();
+        tweets
+            .expect_store()
+            .withf(|t| t.message == tweet(1).message)
+            .once()
+            .return_const(());
+
+        let tweet = tweet(1);
+        create_tweet(&tweets, &tweet.message).await;
     }
 }

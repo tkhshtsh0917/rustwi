@@ -6,16 +6,6 @@ pub struct Tweet {
     pub posted_at: String,
 }
 
-impl Tweet {
-    pub fn new(name: String, message: String, posted_at: String) -> Self {
-        Self {
-            name,
-            message,
-            posted_at,
-        }
-    }
-}
-
 impl From<TweetEntity> for Tweet {
     fn from(entity: TweetEntity) -> Self {
         Tweet {

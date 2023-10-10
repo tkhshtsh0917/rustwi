@@ -16,6 +16,17 @@ impl Tweet {
         }
     }
 
+    pub fn create<T>(message: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Tweet {
+            id: None,
+            message: message.into(),
+            posted_at: Utc::now(),
+        }
+    }
+
     #[allow(dead_code)]
     pub fn id(&self) -> Option<i32> {
         self.id

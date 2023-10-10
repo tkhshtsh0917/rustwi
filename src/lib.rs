@@ -30,7 +30,7 @@ mod repositories_impl {
 mod services {
     mod tweets;
 
-    pub(crate) use tweets::list_tweets;
+    pub(crate) use tweets::{create_tweet, list_tweets};
 }
 
 mod views {
@@ -42,7 +42,6 @@ mod views {
     }
 
     pub(crate) use home::Home;
-    pub(crate) use partial::Tweet;
 }
 
 mod database;
