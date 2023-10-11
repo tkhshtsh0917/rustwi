@@ -2,7 +2,6 @@
 {% import "_tweet.html" as tweet %}
 
 {% block app %}
-
 <form action="/tweets/new" method="post" class="form mb-6">
   <div class="field">
     <div class="control">
@@ -17,9 +16,7 @@
     </div>
   </div>
 </form>
-
 {% for t in tweets %}
 {% call tweet::render(t) %}
 {% endfor %}
-
 {% endblock %}

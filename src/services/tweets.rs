@@ -22,6 +22,17 @@ where
     repo.store(&new_tweet).await;
 }
 
+pub async fn delete_tweet<R>(repo: &R, id: i32)
+where
+    R: Tweets,
+{
+    let tweet = repo.find(id).await;
+    if let Some(mut tweet) = tweet {
+        tweet.delete();
+        repo.store(&tweet).await;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use chrono::{TimeZone, Utc};
@@ -29,7 +40,7 @@ mod tests {
     use crate::entities::Tweet;
     use crate::repositories::MockTweets;
 
-    use super::{create_tweet, list_tweets};
+    use super::{create_tweet, delete_tweet, list_tweets};
 
     fn tweet(id: i32) -> Tweet {
         Tweet::new(
@@ -76,5 +87,27 @@ mod tests {
 
         let tweet = tweet(1);
         create_tweet(&tweets, &tweet.message).await;
+    }
+
+    #[tokio::test]
+    async fn test_delete_tweet() {
+        let mut tweets = MockTweets::new();
+        tweets.expect_find().returning(|_| Some(tweet(1)));
+        tweets
+            .expect_store()
+            .withf(|t| t.id() == Some(1) && t.is_deleted())
+            .once()
+            .return_const(());
+
+        delete_tweet(&tweets, 1).await;
+    }
+
+    #[tokio::test]
+    async fn test_delete_tweet_not_found() {
+        let mut tweets = MockTweets::new();
+        tweets.expect_find().returning(|_| None);
+        tweets.expect_store().never();
+
+        delete_tweet(&tweets, 1).await;
     }
 }
